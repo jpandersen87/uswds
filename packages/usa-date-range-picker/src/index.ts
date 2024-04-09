@@ -1,12 +1,12 @@
 import behavior from "../../uswds-core/src/js/utils/behavior";
 import select from "../../uswds-core/src/js/utils/select";
 import selectOrMatches from "../../uswds-core/src/js/utils/select-or-matches";
-import { prefix: PREFIX } from "../../uswds-core/src/js/config";
-const {
+import { PREFIX } from "../../uswds-core/src/js/config";
+import {
   getDatePickerContext,
   isDateInputInvalid,
   updateCalendarIfVisible,
-} = require("../../usa-date-picker/src/index");
+} from "../../usa-date-picker/src/index";
 
 const DATE_PICKER_CLASS = `${PREFIX}-date-picker`;
 const DATE_RANGE_PICKER_CLASS = `${PREFIX}-date-range-picker`;
@@ -22,11 +22,12 @@ const DEFAULT_MIN_DATE = "0000-01-01";
 
 /**
  * The properties and elements within the date range picker.
- * @typedef {Object} DateRangePickerContext
- * @property {HTMLElement} dateRangePickerEl
- * @property {HTMLElement} rangeStartEl
- * @property {HTMLElement} rangeEndEl
  */
+interface DateRangePickerContext {
+  dateRangePickerEl: HTMLElement;
+  rangeStartEl: HTMLElement;
+  rangeEndEl: HTMLElement;
+}
 
 /**
  * Get an object of the properties and elements belonging directly to the given
@@ -35,19 +36,19 @@ const DEFAULT_MIN_DATE = "0000-01-01";
  * @param {HTMLElement} el the element within the date picker
  * @returns {DateRangePickerContext} elements
  */
-const getDateRangePickerContext = (el) => {
-  const dateRangePickerEl = el.closest(DATE_RANGE_PICKER);
+const getDateRangePickerContext = (el: HTMLElement): DateRangePickerContext => {
+  const dateRangePickerEl = el.closest<HTMLElement>(DATE_RANGE_PICKER)!;
 
   if (!dateRangePickerEl) {
     throw new Error(`Element is missing outer ${DATE_RANGE_PICKER}`);
   }
 
-  const rangeStartEl = dateRangePickerEl.querySelector(
+  const rangeStartEl = dateRangePickerEl.querySelector<HTMLElement>(
     DATE_RANGE_PICKER_RANGE_START
-  );
-  const rangeEndEl = dateRangePickerEl.querySelector(
+  )!;
+  const rangeEndEl = dateRangePickerEl.querySelector<HTMLElement>(
     DATE_RANGE_PICKER_RANGE_END
-  );
+  )!;
 
   return {
     dateRangePickerEl,
@@ -61,7 +62,7 @@ const getDateRangePickerContext = (el) => {
  *
  * @param {HTMLElement} el an element within the date range picker
  */
-const handleRangeStartUpdate = (el) => {
+const handleRangeStartUpdate = (el: HTMLElement) => {
   const { dateRangePickerEl, rangeStartEl, rangeEndEl } =
     getDateRangePickerContext(el);
   const { internalInputEl } = getDatePickerContext(rangeStartEl);
@@ -85,7 +86,7 @@ const handleRangeStartUpdate = (el) => {
  *
  * @param {HTMLElement} el an element within the date range picker
  */
-const handleRangeEndUpdate = (el) => {
+const handleRangeEndUpdate = (el: HTMLElement) => {
   const { dateRangePickerEl, rangeStartEl, rangeEndEl } =
     getDateRangePickerContext(el);
   const { internalInputEl } = getDatePickerContext(rangeEndEl);
@@ -109,8 +110,8 @@ const handleRangeEndUpdate = (el) => {
  *
  * @param {HTMLElement} el The initial wrapping element of the date range picker component
  */
-const enhanceDateRangePicker = (el) => {
-  const dateRangePickerEl = el.closest(DATE_RANGE_PICKER);
+const enhanceDateRangePicker = (el: HTMLElement) => {
+  const dateRangePickerEl = el.closest<HTMLElement>(DATE_RANGE_PICKER)!;
 
   const [rangeStart, rangeEnd] = select(DATE_PICKER, dateRangePickerEl);
 
@@ -150,16 +151,16 @@ const enhanceDateRangePicker = (el) => {
 const dateRangePicker = behavior(
   {
     "input change": {
-      [DATE_RANGE_PICKER_RANGE_START]() {
+      [DATE_RANGE_PICKER_RANGE_START](this: HTMLElement) {
         handleRangeStartUpdate(this);
       },
-      [DATE_RANGE_PICKER_RANGE_END]() {
+      [DATE_RANGE_PICKER_RANGE_END](this: HTMLElement) {
         handleRangeEndUpdate(this);
       },
     },
   },
   {
-    init(root) {
+    init(root: HTMLElement) {
       selectOrMatches(DATE_RANGE_PICKER, root).forEach((dateRangePickerEl) => {
         enhanceDateRangePicker(dateRangePickerEl);
       });

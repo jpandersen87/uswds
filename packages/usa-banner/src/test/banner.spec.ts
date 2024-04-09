@@ -1,7 +1,6 @@
 import fs from "fs";
 import banner from "../index";
 import { render } from "../../../../src/test/render";
-import { screen } from "@testing-library/dom";
 
 const TEMPLATE = fs.readFileSync(`${__dirname}/template.html`, {
   encoding: "utf-8",
@@ -32,11 +31,11 @@ tests.forEach(({ name, selector: containerSelector }) => {
       header = container.querySelector(".usa-banner__header")!;
       button = container.querySelector(".usa-banner__button")!;
       content = container.querySelector(".usa-banner__content")!;
-      banner.on(containerSelector(container));
+      banner.on(containerSelector(container)!);
     });
 
     afterEach(() => {
-      banner.off(containerSelector(container));
+      banner.off(containerSelector(container)!);
     });
 
     it("initializes closed", () => {

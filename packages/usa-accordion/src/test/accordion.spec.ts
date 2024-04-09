@@ -1,4 +1,3 @@
-import assert from "assert";
 import fs from "fs";
 import Accordion from "../index";
 import { render } from "../../../../src/test/render";
@@ -27,17 +26,17 @@ tests.forEach(({ name, selector: containerSelector }) => {
     let container: HTMLElement;
 
     let root: HTMLElement;
-    let button1: HTMLElement;
-    let button2: HTMLElement;
+    let button1: HTMLButtonElement;
+    let button2: HTMLButtonElement;
     let content1: HTMLElement;
     let content2: HTMLElement;
 
     beforeEach(() => {
       container = render(TEMPLATE).container;
-      Accordion.on(containerSelector(container));
+      Accordion.on(containerSelector(container)!);
 
       root = accordionSelector(container)!;
-      const buttons = root!.querySelectorAll<HTMLElement>(
+      const buttons = root!.querySelectorAll<HTMLButtonElement>(
         ".usa-accordion__button"
       );
       const [btn1, btn2] = buttons;
@@ -48,16 +47,16 @@ tests.forEach(({ name, selector: containerSelector }) => {
     });
 
     afterEach(() => {
-      Accordion.off(containerSelector(container));
+      Accordion.off(containerSelector(container)!);
     });
 
     describe("DOM state", () => {
       it('has an "aria-expanded" attribute', () => {
-        expect(button1).toHaveAttribute(EXPANDED);
+        assert(button1.getAttribute(EXPANDED));
       });
 
       it('has an "aria-controls" attribute', () => {
-        expect(button1).toHaveAttribute(CONTROLS);
+        assert(button1.getAttribute(CONTROLS));
       });
 
       describe("accordion.show()", () => {
@@ -67,11 +66,11 @@ tests.forEach(({ name, selector: containerSelector }) => {
         });
 
         it('toggles button aria-expanded="true"', () => {
-          expect(button1).toHaveAttribute(EXPANDED, "true");
+          assert.strictEqual(button1.getAttribute(EXPANDED), "true");
         });
 
         it('toggles content "hidden" off', () => {
-          expect(content1).not.toHaveAttribute(HIDDEN, "true");
+          assert(content1.getAttribute(HIDDEN) !== "true");
         });
       });
 
@@ -82,11 +81,11 @@ tests.forEach(({ name, selector: containerSelector }) => {
         });
 
         it('toggles button aria-expanded="false"', () => {
-          expect(button1).toHaveAttribute(EXPANDED, "false");
+          assert.strictEqual(button1.getAttribute(EXPANDED), "false");
         });
 
         it('toggles content "hidden" on', () => {
-          expect(content1).toHaveAttribute(HIDDEN);
+          assert(content1.hasAttribute(HIDDEN));
         });
       });
     });
@@ -95,11 +94,11 @@ tests.forEach(({ name, selector: containerSelector }) => {
       it("shows the second item when clicked", () => {
         button2.click();
         // first button and section should be collapsed
-        expect(button1).toHaveAttribute(EXPANDED, "false");
-        expect(content1).toHaveAttribute(HIDDEN);
+        assert.strictEqual(button1.getAttribute(EXPANDED), "false");
+        assert(content1.hasAttribute(HIDDEN));
         // second should be expanded
-        expect(button2).toHaveAttribute(EXPANDED, "true");
-        expect(content2).not.toHaveAttribute(HIDDEN, true);
+        assert.strictEqual(button2.getAttribute(EXPANDED), "true");
+        assert(content2.getAttribute(HIDDEN) !== "true");
       });
 
       it("keeps multiple sections open with data-allow-multiple", () => {
@@ -108,11 +107,11 @@ tests.forEach(({ name, selector: containerSelector }) => {
         button2.click();
         button1.click();
 
-        expect(button1).toHaveAttribute(EXPANDED, "true");
-        expect(content1).not.toHaveAttribute(HIDDEN, true);
+        assert.strictEqual(button1.getAttribute(EXPANDED), "true");
+        assert(content1.getAttribute(HIDDEN) !== "true");
         // second should be expanded
-        expect(button2).toHaveAttribute(EXPANDED, "true");
-        expect(content2).not.toHaveAttribute(HIDDEN, true);
+        assert.strictEqual(button2.getAttribute(EXPANDED), "true");
+        assert(content2.getAttribute(HIDDEN) !== "true");
       });
     });
   });

@@ -12,9 +12,11 @@ const BANNER_BUTTON = `${HEADER} [aria-controls]`;
  * Toggle Banner display and class.
  * @param {Event} event
  */
-const toggleBanner = function toggleEl(this: HTMLElement, event: Event) {
+export const toggleBanner = function toggleEl(this: HTMLElement, event: Event) {
   event.preventDefault();
-  const trigger = (event.target as HTMLElement).closest(BANNER_BUTTON)!;
+  const trigger = (event.target as HTMLElement).closest<HTMLElement>(
+    BANNER_BUTTON
+  )!;
 
   toggle(trigger);
   this.closest(HEADER)?.classList.toggle(EXPANDED_CLASS);

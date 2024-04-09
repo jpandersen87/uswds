@@ -17,8 +17,8 @@ const MULTISELECTABLE = "data-allow-multiple";
  * @param {HTMLElement} accordion
  * @return {array<HTMLButtonElement>}
  */
-const getAccordionButtons = (accordion: Element) => {
-  const buttons = select(BUTTON, accordion);
+const getAccordionButtons = (accordion: HTMLElement): HTMLButtonElement[] => {
+  const buttons = select<HTMLButtonElement>(BUTTON, accordion);
 
   return buttons.filter((button) => button.closest(ACCORDION) === accordion);
 };
@@ -32,8 +32,11 @@ const getAccordionButtons = (accordion: Element) => {
  * state will be toggled (from false to true, and vice-versa).
  * @return {boolean} the resulting state
  */
-const toggleButton = (button: Element, expanded?: boolean | string) => {
-  const accordion = button.closest(ACCORDION);
+const toggleButton = (
+  button: HTMLButtonElement,
+  expanded?: boolean
+): boolean => {
+  const accordion = button.closest<HTMLElement>(ACCORDION);
   let safeExpanded = expanded;
 
   if (!accordion) {
@@ -48,28 +51,30 @@ const toggleButton = (button: Element, expanded?: boolean | string) => {
   if (safeExpanded && !multiselectable) {
     getAccordionButtons(accordion).forEach((other) => {
       if (other !== button) {
-        toggle(other, false);
+        return toggle(other, false);
       }
     });
   }
+
+  return false;
 };
 
 /**
  * @param {HTMLButtonElement} button
  * @return {boolean} true
  */
-const showButton = (button: Element) => toggleButton(button, true);
+const showButton = (button: HTMLButtonElement) => toggleButton(button, true);
 
 /**
  * @param {HTMLButtonElement} button
  * @return {boolean} false
  */
-const hideButton = (button: Element) => toggleButton(button, false);
+const hideButton = (button: HTMLButtonElement) => toggleButton(button, false);
 
 const accordion = behavior(
   {
     [CLICK]: {
-      [BUTTON](this: Element) {
+      [BUTTON](this: HTMLButtonElement) {
         toggleButton(this);
 
         if (this.getAttribute(EXPANDED) === "true") {
@@ -82,8 +87,8 @@ const accordion = behavior(
     },
   },
   {
-    init(root: Element) {
-      select(BUTTON, root).forEach((button) => {
+    init(root: HTMLElement) {
+      select<HTMLButtonElement>(BUTTON, root).forEach((button) => {
         const expanded = button.getAttribute(EXPANDED) === "true";
         toggleButton(button, expanded);
       });

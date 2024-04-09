@@ -1,5 +1,5 @@
 import assign from "object-assign";
-import Behavior from "receptor/behavior";
+import { behavior } from "receptor";
 
 /**
  * @name sequence
@@ -8,11 +8,15 @@ import Behavior from "receptor/behavior";
  */
 // We use a named function here because we want it to inherit its lexical scope
 // from the behavior props object, not from the module
-const sequence = (...seq: string[]) =>
-  function callHooks(this: any, target = document.body) {
+const sequence = <S extends string>(...seq: S[]) =>
+  function callHooks<
+    T extends {
+      [P in S]?: <Target extends HTMLElement>(target: Target) => void;
+    }
+  >(this: T, target = document.body) {
     seq.forEach((method) => {
       if (typeof this[method] === "function") {
-        this[method].call(this, target);
+        this[method]?.call(this, target);
       }
     });
   };
@@ -23,8 +27,8 @@ const sequence = (...seq: string[]) =>
  * @param {object?} props
  * @return {receptor.behavior}
  */
-export default (events: object, props?: unknown) =>
-  Behavior(
+export default <E, P>(events: E, props?: P) =>
+  behavior(
     events,
     assign(
       {

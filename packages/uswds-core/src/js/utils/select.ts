@@ -4,8 +4,8 @@
  * @param {any} value
  * @return {boolean}
  */
-const isElement = (value) =>
-  value && typeof value === "object" && value.nodeType === 1;
+const isElement = (value: unknown): boolean =>
+  !!value && typeof value === "object" && Object.hasOwn(value, "nodeType");
 
 /**
  * @name select
@@ -15,7 +15,10 @@ const isElement = (value) =>
  *   in. If not provided, it defaults to the document.
  * @return {HTMLElement[]} - An array of DOM nodes or an empty array.
  */
-export default (selector, context) => {
+export default <T = HTMLElement>(
+  selector: string,
+  context?: Document | HTMLElement
+): T[] => {
   if (typeof selector !== "string") {
     return [];
   }

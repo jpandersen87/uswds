@@ -29,7 +29,7 @@ const joinSassAssets = createJoinFunction(
 export const core = {
   builder: "webpack5",
 };
-export const stories = ["../packages/**/*.mdx", "../packages/**/**/*.stories.@(js|jsx|ts|tsx)"];
+export const stories = ["../packages/**/*.mdx"];
 export const addons = [
   "@storybook/addon-links",
   "@storybook/addon-essentials",
@@ -127,5 +127,5 @@ export async function webpackFinal(config, { configType }) {
 }
 
 export const docs = {
-  autodocs: true
+  autodocs: true,
 };
