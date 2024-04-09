@@ -1,24 +1,24 @@
-const { series, parallel } = require("gulp");
-const dutil = require("./utils/doc-util");
-const { buildSprite } = require("./svg-sprite");
-const { compileSass } = require("./sass");
-const { compileJS } = require("./javascript");
-const { copyTheme, copyFonts, copyIcons, copyImages, copySass } = require("./copy");
-const { cleanDist } = require("./clean");
+import gulp from "gulp";
+import { logIntroduction, logMessage } from "./utils/doc-util.js";
+import { buildSprite } from "./svg-sprite.js";
+import { compileSass } from "./sass.js";
+import { compileJS } from "./javascript.js";
+import {
+  copyTheme,
+  copyFonts,
+  copyIcons,
+  copyImages,
+  copySass,
+} from "./copy.js";
+import { cleanDist } from "./clean.js";
 
-/**
- * Generates the dist directory that gets zipped on release.
-  .
-  ├── * Delete `dist/` directory
-  ├── * Create SVG spritesheet
-  ├── * Copy markdown docs
-  ├── * Compile sass and js
-  └── * Copy sass, images, and fonts to `dist/`
- */
-exports.build = series(
+const { series, parallel } = gulp;
+
+// eslint-disable-next-line import/prefer-default-export
+export const build = series(
   (done) => {
-    dutil.logIntroduction();
-    dutil.logMessage("build", "Creating distribution directories.");
+    logIntroduction();
+    logMessage("build", "Creating distribution directories.");
     done();
   },
   cleanDist,

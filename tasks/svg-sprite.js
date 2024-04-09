@@ -1,62 +1,64 @@
 /* eslint-disable arrow-body-style */
-const { src, dest, series } = require("gulp");
-const svgSprite = require("gulp-svgstore");
-const rename = require("gulp-rename");
-const del = require("del");
-const dutil = require("./utils/doc-util");
-const { logError } = require('./utils/doc-util');
-const { copyIcons } = require("./copy");
-const iconConfig = require("../packages/usa-icon/src/usa-icons.config");
+import gulp from "gulp";
+import svgSprite from "gulp-svgstore";
+import rename from "gulp-rename";
+import del from "del";
+import { logError, logMessage } from "./utils/doc-util.js";
+import { copyIcons } from "./copy.js";
+import config from "../packages/usa-icon/src/usa-icons.config.js";
+
+const { src, dest, series } = gulp;
+const { material, materialDeprecated, uswds } = config;
 
 const svgPath = "dist/img";
 
-function cleanIcons() {
+export function cleanIcons() {
   return del(`${svgPath}/usa-icons`);
 }
 
-function collectIcons() {
-  dutil.logMessage("collectIcons", "Collecting default icon set in dist/img/usa-icons");
-  return src([
-    `node_modules/@material-design-icons/svg/filled/{${iconConfig.material}}.svg`,
-    `packages/usa-icon/src/img/material-icons-deprecated/{${iconConfig.materialDeprecated}}.svg`,
-    `packages/usa-icon/src/img/uswds-icons/{${iconConfig.uswds}}.svg`,
-  ])
-    .pipe(dest(`${svgPath}/usa-icons`))
-}
-
-function buildSprite(done) {
-  return (
-    src(`${svgPath}/usa-icons/*.svg`)
-      .pipe(svgSprite())
-      .on("error", logError)
-      .pipe(dest(svgPath))
-      .on("end", () => done())
+export function collectIcons() {
+  logMessage(
+    "collectIcons",
+    "Collecting default icon set in dist/img/usa-icons"
   );
+  return src([
+    `node_modules/@material-design-icons/svg/filled/{${material}}.svg`,
+    `packages/usa-icon/src/img/material-icons-deprecated/{${materialDeprecated}}.svg`,
+    `packages/usa-icon/src/img/uswds-icons/{${uswds}}.svg`,
+  ]).pipe(dest(`${svgPath}/usa-icons`));
 }
 
-function renameSprite() {
+export function buildSprite(done) {
+  return src(`${svgPath}/usa-icons/*.svg`)
+    .pipe(svgSprite())
+    .on("error", logError)
+    .pipe(dest(svgPath))
+    .on("end", () => done());
+}
+
+export function renameSprite() {
   return src(`${svgPath}/usa-icons.svg`)
     .pipe(rename(`${svgPath}/sprite.svg`))
     .pipe(dest(`./`));
 }
 
-function cleanSprite() {
+export function cleanSprite() {
   return del(`${svgPath}/usa-icons.svg`);
 }
 
-exports.buildSpriteStandalone = series(
+export const buildSpriteStandalone = series(
   copyIcons,
   cleanIcons,
   collectIcons,
   buildSprite,
   renameSprite,
   cleanSprite
-)
+);
 
-exports.buildSprite = series(
+export default series(
   cleanIcons,
   collectIcons,
   buildSprite,
   renameSprite,
   cleanSprite
-)
+);

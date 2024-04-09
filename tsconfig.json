@@ -1,14 +1,32 @@
 {
   "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "noEmit": true,
-    "allowJs": true,
-    "checkJs": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
-    "lib": ["es6", "DOM"],
-    "types": ["node"]
+    "declaration": true,
+    "outDir": "./dist",
+    "isolatedModules": true,
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ]
   },
-  "include": ["packages/uswds-core/src/js/utils/select.js"]
+  "include": [
+    "packages",
+    "src"
+  ],
 }

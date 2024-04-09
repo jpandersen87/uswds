@@ -1,0 +1,6 @@
+npm ERR! code ETARGET
+npm ERR! notarget No matching version found for @storybook/html-webpack5@6.5.16.
+npm ERR! notarget In most cases you or one of your dependencies are requesting
+npm ERR! notarget a package version that doesn't exist.
+
+npm ERR! A complete log of this run can be found in: /Users/josephandersen/.npm/_logs/2024-04-08T22_07_16_355Z-debug-0.log

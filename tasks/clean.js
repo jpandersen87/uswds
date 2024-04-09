@@ -3,20 +3,21 @@
  */
 
 // Include Our Plugins
-const del = require('del');
-const cFlags = require("./utils/cflags");
-const dutil = require("./utils/doc-util");
+import del from "del";
+import { cleanup } from "./utils/cflags.js";
+import { logMessage } from "./utils/doc-util.js";
 
 // Clean generated Dist directory.
-exports.cleanDist = done => {
-  if (!cFlags.cleanup) {
-    dutil.logMessage(
+// eslint-disable-next-line import/prefer-default-export
+export function cleanDist(done) {
+  if (!cleanup) {
+    logMessage(
       "clean-dist",
       "Skipping cleaning up the distribution directories."
     );
     return done();
   }
-  dutil.logMessage("clean-dist", "Removing distribution directories.");
+  logMessage("clean-dist", "Removing distribution directories.");
 
   return del("dist");
-};
+}

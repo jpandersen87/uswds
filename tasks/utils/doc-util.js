@@ -1,52 +1,42 @@
-const log = require("fancy-log");
-const colors = require("ansi-colors");
-const pkg = require("../../package.json");
+import log from "fancy-log";
+import ansiColors from "ansi-colors";
+import _pkg from "../../package.json" assert { type: "json" };
+
+const { white, yellow, cyan, magenta, red, green } = ansiColors;
 
 const shellPrefix = "$";
 
-function drawFlag() {
-  log(colors.white(""));
-  log(colors.white("* * * * * ========================"));
-  log(colors.white("* * * * * ========================"));
-  log(colors.white("* * * * * ========================"));
-  log(colors.white("* * * * * ========================"));
-  log(colors.white("=================================="));
-  log(colors.white("=================================="));
-  log(colors.white("=================================="));
-  log(colors.white(""));
+export function drawFlag() {
+  log(white(""));
+  log(white("* * * * * ========================"));
+  log(white("* * * * * ========================"));
+  log(white("* * * * * ========================"));
+  log(white("* * * * * ========================"));
+  log(white("=================================="));
+  log(white("=================================="));
+  log(white("=================================="));
+  log(white(""));
 }
 
-module.exports = {
-  pkg: {
-    name: pkg.name,
-    version: pkg.version,
-  },
-
-  dirName: `${pkg.name}-${pkg.version}`,
-
-  logIntroduction(message) {
-    const introMessage = message || "USWDS";
-    log(colors.yellow(`${introMessage} v${pkg.version}`));
-    drawFlag();
-  },
-
-  logCommand(name, message) {
-    log(shellPrefix, colors.cyan(name), colors.magenta(message));
-  },
-
-  logHelp(name, message) {
-    log(shellPrefix, colors.cyan(name), colors.yellow(message));
-  },
-
-  logData(name, message) {
-    log(colors.cyan(name), colors.yellow(message));
-  },
-
-  logError(name, message) {
-    log(colors.red(name), colors.yellow(message));
-  },
-
-  logMessage(name, message) {
-    log(colors.cyan(name), colors.green(message));
-  },
-};
+export const pkg = _pkg;
+export const dirName = `${pkg.name}-${pkg.version}`;
+export function logIntroduction(message) {
+  const introMessage = message || "USWDS";
+  log(yellow(`${introMessage} v${pkg.version}`));
+  drawFlag();
+}
+export function logCommand(name, message) {
+  log(shellPrefix, cyan(name), magenta(message));
+}
+export function logHelp(name, message) {
+  log(shellPrefix, cyan(name), yellow(message));
+}
+export function logData(name, message) {
+  log(cyan(name), yellow(message));
+}
+export function logError(name, message) {
+  log(red(name), yellow(message));
+}
+export function logMessage(name, message) {
+  log(cyan(name), green(message));
+}

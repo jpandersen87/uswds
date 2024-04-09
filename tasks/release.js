@@ -1,48 +1,48 @@
-const spawn = require("cross-spawn");
-const { series } = require("gulp");
-const crypto = require("crypto");
-const fs = require("fs");
-const dutil = require("./utils/doc-util");
-const { build } = require("./build");
+import spawn from "cross-spawn";
+import gulp from "gulp";
+import { createHash as _createHash } from "crypto";
+import { readFileSync, existsSync, mkdirSync, writeFile } from "fs";
+import { dirName, logMessage, logError, logData } from "./utils/doc-util.js";
+import { build } from "./build.js";
 
-const hash = crypto.createHash("sha256");
+const { series } = gulp;
 
-const version = dutil.dirName.replace("@uswds/", "");
+const hash = _createHash("sha256");
+
+const version = dirName.replace("@uswds/", "");
 
 // Create a hash from the compiled tgz users can compare and verify
 // their download is authentic.
-function createHash(file) {
-  dutil.logMessage("createHash", "Generating sha256sum hash from ZIP file.");
+export function createHash(file) {
+  logMessage("createHash", "Generating sha256sum hash from ZIP file.");
 
-  const fileBuffer = fs.readFileSync(file);
+  const fileBuffer = readFileSync(file);
   hash.update(fileBuffer);
   const dir = "./security";
   const hex = hash.digest("hex");
   const fileName = `${dir}/${version}-zip-hash.txt`;
 
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
+  if (!existsSync(dir)) {
+    mkdirSync(dir);
   }
 
-  fs.writeFile(fileName, hex, (error) => {
+  writeFile(fileName, hex, (error) => {
     if (error) {
-      return dutil.logError(`Error writing hash: ${error}`);
+      return logError(`Error writing hash: ${error}`);
     }
 
-    return dutil.logMessage("createHash", `Created sha256sum hash: ${hex}`);
+    return logMessage("createHash", `Created sha256sum hash: ${hex}`);
   });
 }
 
-function zipArchives(done) {
+export function zipArchives(done) {
   const zip = spawn("npm", ["pack"]);
 
-  dutil.logMessage("zip-archives", `Creating a tgz archive in root directory`);
+  logMessage("zip-archives", `Creating a tgz archive in root directory`);
 
-  zip.stdout.on("data", (data) =>
-    dutil.logData("zip-archives", `Created ${data}`)
-  );
+  zip.stdout.on("data", (data) => logData("zip-archives", `Created ${data}`));
 
-  zip.stderr.on("data", (data) => dutil.logError("zip-archives", data));
+  zip.stderr.on("data", (data) => logError("zip-archives", data));
 
   // @TODO get data from stdout
   zip.on("close", (code) => {
@@ -53,12 +53,9 @@ function zipArchives(done) {
   });
 }
 
-exports.release = series(
+export const release = series(
   (done) => {
-    dutil.logMessage(
-      "release",
-      `Creating a tgz archive at ./uswds-${version}.tgz`
-    );
+    logMessage("release", `Creating a tgz archive at ./uswds-${version}.tgz`);
     done();
   },
   build,
